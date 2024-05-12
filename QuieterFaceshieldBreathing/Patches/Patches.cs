@@ -48,11 +48,6 @@ namespace QuieterFaceshieldBreathing.Patches
 
     internal class SimpleSourcePlay : ModulePatch
     {
-        private const string NORMAL_BREATHING = "breath_ok";
-        private static readonly FieldInfo _playerSpeechSource = AccessTools.Field(typeof(Player), "_speechSource");
-
-        private static float _originalSourceVolume = -1f;
-
         protected override MethodBase GetTargetMethod()
         {
             return AccessTools.Method(typeof(SimpleSource), nameof(SimpleSource.Play));
@@ -61,6 +56,7 @@ namespace QuieterFaceshieldBreathing.Patches
         [PatchPrefix]
         private static void PatchPrefix(
             SimpleSource __instance,
+            AudioGroupPreset ___Preset,
             ref float ___SourcePlayingVolume,
             AudioClip clip1,
             bool oneShot,
@@ -73,32 +69,54 @@ namespace QuieterFaceshieldBreathing.Patches
                 return;
             }
 
-            if (__instance != _playerSpeechSource.GetValue(mainPlayer) as SimpleSource)
+            if (__instance != QFSBPlugin.PlayerSpeechSource.GetValue(mainPlayer) as SimpleSource)
             {
                 return;
             }
 
-            if (oneShot || clip1 == null || !clip1.name.Contains(NORMAL_BREATHING) || !QFSBPlugin.ShouldChangeVolume)
+            if (oneShot || clip1 == null || !clip1.name.Contains(QFSBPlugin.NORMAL_BREATHING) || !QFSBPlugin.ShouldChangeVolume)
             {
-                ResetVolume(__instance, ref ___SourcePlayingVolume);
+                QFSBPlugin.ResetSourceVolume(__instance, ___Preset, ref ___SourcePlayingVolume);
                 return;
             }
 
-            _originalSourceVolume = __instance.source1.volume;
+            QFSBPlugin.OriginalSourceVolume = __instance.source1.volume;
             volume *= QFSBPlugin.Volume.Value * 0.01f;
 #if DEBUG
             QFSBPlugin.LogSource.LogInfo($"Current speech AudioClip: {clip1.name}, volume: {volume}");
 #endif
         }
+    }
 
-        private static void ResetVolume(SimpleSource source, ref float sourcePlayingVolume)
+    internal class SimpleSourcePlayScheduled : ModulePatch
+    {
+        protected override MethodBase GetTargetMethod()
         {
-            if (_originalSourceVolume >= 0)
+            return AccessTools.Method(typeof(SimpleSource), nameof(SimpleSource.PlayScheduled));
+        }
+
+        [PatchPrefix]
+        private static void PatchPrefix(SimpleSource __instance, AudioGroupPreset ___Preset, ref float ___SourcePlayingVolume)
+        {
+            Player mainPlayer = Singleton<GameWorld>.Instance.MainPlayer;
+            if (mainPlayer == null)
             {
-                sourcePlayingVolume = _originalSourceVolume / source.OcclusionVolumeFactor;
-                source.UpdateSourceVolume(1f);
-                _originalSourceVolume = -1f;
+                return;
             }
+
+            if (__instance != QFSBPlugin.PlayerSpeechSource.GetValue(mainPlayer) as SimpleSource)
+            {
+                return;
+            }
+
+            if (!__instance.source1.clip.name.Contains(QFSBPlugin.NORMAL_BREATHING) || !QFSBPlugin.ShouldChangeVolume)
+            {
+                QFSBPlugin.ResetSourceVolume(__instance, ___Preset, ref ___SourcePlayingVolume);
+                return;
+            }
+
+            QFSBPlugin.OriginalSourceVolume = __instance.source1.volume;
+            __instance.source1.volume *= QFSBPlugin.Volume.Value * 0.01f;
         }
     }
 }
