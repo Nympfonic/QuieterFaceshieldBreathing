@@ -5,7 +5,6 @@ using BepInEx.Configuration;
 using BepInEx.Logging;
 using EFT;
 using HarmonyLib;
-using QuieterFaceshieldBreathing.Patches;
 using System.Reflection;
 
 namespace QuieterFaceshieldBreathing
@@ -40,7 +39,6 @@ namespace QuieterFaceshieldBreathing
             Volume = Config.Bind("", "Volume", 100, new ConfigDescription("", new AcceptableValueRange<int>(0, 100)));
 
             new PlayerCheckMuffledState().Enable();
-            new SimpleSourcePlayScheduled().Enable();
             new SimpleSourcePlay().Enable();
         }
     }
