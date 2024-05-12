@@ -61,7 +61,6 @@ namespace QuieterFaceshieldBreathing.Patches
         [PatchPrefix]
         private static void PatchPrefix(
             SimpleSource __instance,
-            AudioGroupPreset ___Preset,
             ref float ___SourcePlayingVolume,
             AudioClip clip1,
             bool oneShot,
@@ -81,7 +80,7 @@ namespace QuieterFaceshieldBreathing.Patches
 
             if (oneShot || clip1 == null || !clip1.name.Contains(NORMAL_BREATHING) || !QFSBPlugin.ShouldChangeVolume)
             {
-                ResetVolume(__instance, ___Preset, ref ___SourcePlayingVolume);
+                ResetVolume(__instance, ref ___SourcePlayingVolume);
                 return;
             }
 
@@ -92,11 +91,11 @@ namespace QuieterFaceshieldBreathing.Patches
 #endif
         }
 
-        private static void ResetVolume(SimpleSource source, AudioGroupPreset preset, ref float sourcePlayingVolume)
+        private static void ResetVolume(SimpleSource source, ref float sourcePlayingVolume)
         {
             if (_originalSourceVolume >= 0)
             {
-                sourcePlayingVolume = _originalSourceVolume * preset.OverallVolume;
+                sourcePlayingVolume = _originalSourceVolume / source.OcclusionVolumeFactor;
                 source.UpdateSourceVolume(1f);
                 _originalSourceVolume = -1f;
             }
