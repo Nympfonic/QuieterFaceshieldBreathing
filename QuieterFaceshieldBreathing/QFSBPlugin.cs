@@ -10,7 +10,7 @@ using System.Reflection;
 namespace QuieterFaceshieldBreathing
 {
 
-    [BepInPlugin("com.Arys.QuieterFaceshieldBreathing", "Quieter Faceshield Breathing", "1.0.0")]
+    [BepInPlugin("com.Arys.QuieterFaceshieldBreathing", "Quieter Faceshield Breathing", "1.0.1")]
     public class QFSBPlugin : BaseUnityPlugin
     {
         internal const string NORMAL_BREATHING = "breath_ok";

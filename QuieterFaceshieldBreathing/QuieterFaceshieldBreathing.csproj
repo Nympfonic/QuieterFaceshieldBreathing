@@ -28,19 +28,19 @@
   
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>References\0Harmony.dll</HintPath>
-    </Reference>
-    <Reference Include="Aki.Reflection">
-      <HintPath>References\Aki.Reflection.dll</HintPath>
+      <HintPath>..\..\SPT Assembly Refs\39x\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>References\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\SPT Assembly Refs\39x\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Comfort">
-      <HintPath>References\Comfort.dll</HintPath>
+      <HintPath>..\..\SPT Assembly Refs\39x\Comfort.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Cecil">
-      <HintPath>References\Mono.Cecil.dll</HintPath>
+      <HintPath>..\..\SPT Assembly Refs\39x\Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="spt-reflection">
+      <HintPath>..\..\SPT Assembly Refs\39x\spt-reflection.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>
